@@ -12,7 +12,7 @@ fi
 
 # Check for command line argument
 if [ $# -gt 0 ]; then
-  name=$1
+  name="$1"
 else
   echo "Enter the project name:"
   read name
@@ -26,20 +26,21 @@ mobileName=$(echo "$titlecaseName" | tr -d ' ')
 
 echo "Working with names: $dashedName and $titlecaseName"
 
-
-
-$readmeContent = '
-# Feryv: $titlecaseName Application
+# Here document for setting variable values
+readmeContent=$(cat <<EOF
+# Feryv: ${titlecaseName} Application
 
 ## Setting up new environment
 
 - cd src
 - npm i -g yarn
 - yarn 
-'
-$packageContent = '
+EOF
+)
+
+packageContent=$(cat <<EOF
 {
-  "name": "feryv-$dashedName",
+  "name": "feryv-${dashedName}",
   "version": "0.0.1",
   "main": "index.js",
   "license": "MIT",
@@ -58,8 +59,10 @@ $packageContent = '
     ]
   }
 }
-'
-$gitignoreContent = '
+EOF
+)
+
+gitignoreContent=$(cat <<EOF
 **/node_modules
 
 # OSX
@@ -106,11 +109,6 @@ yarn-error.log
 
 # fastlane
 #
-# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
-# screenshots whenever they are needed.
-# For more information about the recommended setup visit:
-# https://docs.fastlane.tools/best-practices/source-control/
-
 **/fastlane/report.xml
 **/fastlane/Preview.html
 **/fastlane/screenshots
@@ -128,10 +126,11 @@ yarn-error.log
 
 # testing
 **/coverage
-'
+EOF
+)
 
-$backendReadmeContent = '
-# $titlecaseName Backend
+backendReadmeContent=$(cat <<EOF
+# ${titlecaseName} Backend
 
 Description
 
@@ -140,17 +139,19 @@ Description
 ### Example Microservice
 
 Description.
-'
-$backendDockerComposeContent = '
+EOF
+)
+
+backendDockerComposeContent=$(cat <<EOF
 version: "3.8"
 services:
-  feryv-$dashedName-example-microservice:
+  feryv-${dashedName}-example-microservice:
     build: ./example-microservice
     ports:
-      - "3001:${PORT}"
+      - "3001:\${PORT}"
     environment:
       - NODE_ENV=production
-      - PORT=${PORT}
+      - PORT=\${PORT}
   postgres:
     image: postgres
     ports:
@@ -166,10 +167,10 @@ volumes:
 
 networks:
   backend-network:
+EOF
+)
 
-'
-
-$backendMicroserviceDockerfileContent = '
+backendMicroserviceDockerfileContent=$(cat <<EOF
 FROM node:14
 
 # Create app directory
@@ -189,22 +190,26 @@ RUN npm run build
 ENV PORT 3001
 
 # Your applications default port
-EXPOSE $PORT
+EXPOSE \$PORT
 
 # Adjust this command according to your build output directory and main file
 CMD ["node", "dist/index.js"]
-'
-$backendMicroserviceNodemonContent = '
+EOF
+)
+
+backendMicroserviceNodemonContent=$(cat <<EOF
 {
   "watch": ["./src"],
   "ext": "ts,json",
   "exec": "npm run start",
   "ignore": ["src/assets/*-spec.json"]
 }
-'
-$backendMicroservicePackageContent = '
+EOF
+)
+
+backendMicroservicePackageContent=$(cat <<EOF
 {
-  "name": "feryv-$dashedName-example-microservice",
+  "name": "feryv-${dashedName}-example-microservice",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -214,7 +219,7 @@ $backendMicroservicePackageContent = '
     "serve": "node dist/index.js"
   },
   "dependencies": {
-    "feryv-$dashedName-common": "0.0.1",
+    "feryv-${dashedName}-common": "0.0.1",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.11",
     "@types/node": "^20.10.5",
@@ -239,24 +244,28 @@ $backendMicroservicePackageContent = '
     "nodemon": "^3.0.2"
   }
 }
-'
-$backendMicroserviceReadmeContent = '
+EOF
+)
+
+backendMicroserviceReadmeContent=$(cat <<EOF
 # Example Microservice
 
 Get Postgres Docker:
 
-- `docker pull postgres`
+- \`docker pull postgres\`
 
 Build Docker:
 
-- `docker build -t feryv-$dashedName-example-microservice:latest .`
+- \`docker build -t feryv-${dashedName}-example-microservice:latest .\`
 
 Run Docker:
 
-- `docker run --name feryv-$dashedName-example-microservice-container -p 3001:3001 feryv-$dashedName-example-microservice`
-- `docker run --name postgres-container -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_DB=mydatabase -p 5432:5432 -d postgres`
-'
-$backendMicroserviceTSConfigContent ='
+- \`docker run --name feryv-${dashedName}-example-microservice-container -p 3001:3001 feryv-${dashedName}-example-microservice\`
+- \`docker run --name postgres-container -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_DB=mydatabase -p 5432:5432 -d postgres\`
+EOF
+)
+
+backendMicroserviceTSConfigContent=$(cat <<EOF
 {
   "compilerOptions": {
     "target": "es6",
@@ -270,11 +279,12 @@ $backendMicroserviceTSConfigContent ='
     "forceConsistentCasingInFileNames": true
   },
   "include": [
-    "**/*.ts",
+    "**/*.ts"
   ],
   "exclude": ["node_modules"]
 }
-'
+EOF
+)
 
 # Create directory and navigate into it
 mkdir -p "../$titlecaseName"
