@@ -136,7 +136,7 @@ Description
 
 ## Microservices Layout
 
-### Example Microservice
+### Microservice Service 1
 
 Description.
 EOF
@@ -145,8 +145,8 @@ EOF
 backendDockerComposeContent=$(cat <<EOF
 version: "3.8"
 services:
-  feryv-${dashedName}-example-microservice:
-    build: ./example-microservice
+  feryv-${dashedName}-microservice-1:
+    build: ./microservice-1
     ports:
       - "3001:\${PORT}"
     environment:
@@ -170,7 +170,7 @@ networks:
 EOF
 )
 
-backendMicroserviceDockerfileContent=$(cat <<EOF
+backendMicroservice1DockerfileContent=$(cat <<EOF
 FROM node:14
 
 # Create app directory
@@ -197,7 +197,7 @@ CMD ["node", "dist/index.js"]
 EOF
 )
 
-backendMicroserviceNodemonContent=$(cat <<EOF
+backendMicroservice1NodemonContent=$(cat <<EOF
 {
   "watch": ["./src"],
   "ext": "ts,json",
@@ -207,9 +207,9 @@ backendMicroserviceNodemonContent=$(cat <<EOF
 EOF
 )
 
-backendMicroservicePackageContent=$(cat <<EOF
+backendMicroservice1PackageContent=$(cat <<EOF
 {
-  "name": "feryv-${dashedName}-example-microservice",
+  "name": "feryv-${dashedName}-microservice-1",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -247,8 +247,8 @@ backendMicroservicePackageContent=$(cat <<EOF
 EOF
 )
 
-backendMicroserviceReadmeContent=$(cat <<EOF
-# Example Microservice
+backendMicroservice1ReadmeContent=$(cat <<EOF
+# Microservice 1
 
 Get Postgres Docker:
 
@@ -256,16 +256,16 @@ Get Postgres Docker:
 
 Build Docker:
 
-- \`docker build -t feryv-${dashedName}-example-microservice:latest .\`
+- \`docker build -t feryv-${dashedName}-microservice-1:latest .\`
 
 Run Docker:
 
-- \`docker run --name feryv-${dashedName}-example-microservice-container -p 3001:3001 feryv-${dashedName}-example-microservice\`
+- \`docker run --name feryv-${dashedName}-microservice-1-container -p 3001:3001 feryv-${dashedName}-microservice-1\`
 - \`docker run --name postgres-container -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_DB=mydatabase -p 5432:5432 -d postgres\`
 EOF
 )
 
-backendMicroserviceTSConfigContent=$(cat <<EOF
+backendMicroservice1TSConfigContent=$(cat <<EOF
 {
   "compilerOptions": {
     "target": "es6",
@@ -293,9 +293,9 @@ cd "../$titlecaseName"
 # Create directories
 mkdir -p src
 mkdir -p src/backend
-mkdir -p src/backend/example-microservice
-mkdir -p src/backend/example-microservice/src
-mkdir -p src/backend/example-microservice/test
+mkdir -p src/backend/microservice-1
+mkdir -p src/backend/microservice-1/src
+mkdir -p src/backend/microservice-1/test
 
 # Write contents to files
 echo "$readmeContent" > README.md
@@ -307,15 +307,15 @@ echo "Created project $titlecaseName and base level folders and files."
 echo "$backendReadmeContent" > src/backend/README.md
 echo "$backendDockerComposeContent" > src/backend/docker-compose.yaml
 
-# Example microservice specific content
-echo "$backendMicroserviceDockerfileContent" > src/backend/example-microservice/Dockerfile
-echo "$backendMicroserviceNodemonContent" > src/backend/example-microservice/nodemon.json
-echo "$backendMicroservicePackageContent" > src/backend/example-microservice/package.json
-echo "$backendMicroserviceReadmeContent" > src/backend/example-microservice/README.md
-echo "$backendMicroserviceTSConfigContent" > src/backend/example-microservice/tsconfig.json
+# Microservice 1 specific content
+echo "$backendMicroservice1DockerfileContent" > src/backend/microservice-1/Dockerfile
+echo "$backendMicroservice1NodemonContent" > src/backend/microservice-1/nodemon.json
+echo "$backendMicroservice1PackageContent" > src/backend/microservice-1/package.json
+echo "$backendMicroservice1ReadmeContent" > src/backend/microservice-1/README.md
+echo "$backendMicroservice1TSConfigContent" > src/backend/microservice-1/tsconfig.json
 
 # Copy template files
-cp -r "../_template/src/backend/example_microservice/src/." "src/backend/example-microservice/src/"
+cp -r "../_template/src/backend/microservice_1/src/." "src/backend/microservice_1/src/"
 
 echo "Created backend microservice examples base level folders and files."
 
